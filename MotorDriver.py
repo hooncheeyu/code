@@ -63,15 +63,15 @@ class motor_driver:
 		time.sleep(.02)
 
 m= motor_driver()
-while True:
-		try:
-                    m.MotorSpeedSetAB(100,100)
-                    m.MotorDirectionSet(0b1010)
-                    time.sleep(2)
-                    m.MotorSpeedSetAB(100,100)
-                    m.MotorDirectionSet(0b0101)
-                    time.sleep(2)
-                except KeyboardInterrupt:
-                    m.MotorSpeedSetAB(0,0)
-                except IOError:
-                    print ("Error")
+m.MotorSpeedSetAB(100,100)
+m.MotorDirectionSet(0b1010)
+time.sleep(2)
+m.MotorSpeedSetAB(100,100)
+m.MotorDirectionSet(0b0101)
+time.sleep(2)
+m.MotorSpeedSetAB(100,100)
+m.MotorDirectionSet(0b1001)
+time.sleep(2)
+m.MotorSpeedSetAB(100,100)
+m.MotorDirectionSet(0b0110)
+time.sleep(2)
