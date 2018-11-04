@@ -69,9 +69,11 @@ time.sleep(2)
 m.MotorSpeedSetAB(100,100)
 m.MotorDirectionSet(0b0101)
 time.sleep(2)
+print "backwards"
 m.MotorSpeedSetAB(100,100)
 m.MotorDirectionSet(0b1001)
 time.sleep(2)
+print "forward"
 m.MotorSpeedSetAB(100,100)
 m.MotorDirectionSet(0b0110)
 time.sleep(2)
