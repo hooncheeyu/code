@@ -63,25 +63,25 @@ class motor_driver:
         time.sleep(.02)
 
 
-def move(self, MotorSpeedA, MotorSpeedB, Second):
-    if(MotorSpeedA < 0) and (MotorSpeedB < 0):
-        self.MotorDirectionSet(0b1001)
-        MotorSpeedA = int(str(MotorSpeedA).strip('-'))
-        MotorSpeedB = int(str(MotorSpeedB).strip('-'))
-        self.MotorSpeedSetAB(MotorSpeedA, MotorSpeedB)
-    elif(MotorSpeedA >= 0) and (MotorSpeedB >=0):
-        self.MotorDirectionSet(0b0110)
-        self.MotorSpeedSetAB(MotorSpeedA, MotorSpeedB)
-    elif(MotorSpeedA >=100) and (MotorSpeedB < 0):
-        MotorSpeedB = int(str(MotorSpeedB).strip('-'))
-        self.MotorSpeedSetAB(MotorSpeedA, MotorSpeedB)
-        self.MotorDirectionSet(0b1010)
-    elif(MotorSpeedA <100) and (MotorSpeedB >= 0):
-        MotorSpeedA = int(str(MotorSpeedA).strip('-'))
-        self.MotorSpeedSetAB(MotorSpeedA, MotorSpeedB)
-        self.MotorDirectionSet(0b0101)
-        time.sleep(Second)
-        self.MotorSpeedSetAB(0, 0)
+    def move(self, MotorSpeedA, MotorSpeedB, Second):
+        if(MotorSpeedA < 0) and (MotorSpeedB < 0):
+            self.MotorDirectionSet(0b1001)
+            MotorSpeedA = int(str(MotorSpeedA).strip('-'))
+            MotorSpeedB = int(str(MotorSpeedB).strip('-'))
+            self.MotorSpeedSetAB(MotorSpeedA, MotorSpeedB)
+        elif(MotorSpeedA >= 0) and (MotorSpeedB >=0):
+            self.MotorDirectionSet(0b0110)
+            self.MotorSpeedSetAB(MotorSpeedA, MotorSpeedB)
+        elif(MotorSpeedA >=100) and (MotorSpeedB < 0):
+            MotorSpeedB = int(str(MotorSpeedB).strip('-'))
+            self.MotorSpeedSetAB(MotorSpeedA, MotorSpeedB)
+            self.MotorDirectionSet(0b1010)
+        elif(MotorSpeedA <100) and (MotorSpeedB >= 0):
+            MotorSpeedA = int(str(MotorSpeedA).strip('-'))
+            self.MotorSpeedSetAB(MotorSpeedA, MotorSpeedB)
+            self.MotorDirectionSet(0b0101)
+            time.sleep(Second)
+            self.MotorSpeedSetAB(0, 0)
 
                     # m= motor_driver()
                     # m.MotorSpeedSetAB(100,100)
