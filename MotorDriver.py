@@ -23,78 +23,78 @@ else:
 
 class motor_driver:
 
-	MotorSpeedSet             = 0x82
-	PWMFrequenceSet           = 0x84
-	DirectionSet              = 0xaa
-	MotorSetA                 = 0xa1
-	MotorSetB                 = 0xa5
-	Nothing                   = 0x01
-	EnableStepper             = 0x1a
-	UnenableStepper           = 0x1b
-	Stepernu                  = 0x1c
-	I2CMotorDriverAdd         = 0x0f  #Set the address of the I2CMotorDriver
+    MotorSpeedSet             = 0x82
+    PWMFrequenceSet           = 0x84
+    DirectionSet              = 0xaa
+    MotorSetA                 = 0xa1
+    MotorSetB                 = 0xa5
+    Nothing                   = 0x01
+    EnableStepper             = 0x1a
+    UnenableStepper           = 0x1b
+    Stepernu                  = 0x1c
+    I2CMotorDriverAdd         = 0x0f  #Set the address of the I2CMotorDriver
 
-	def __init__(self,address=0x0f):
-		self.I2CMotorDriverAdd=address
+    def __init__(self,address=0x0f):
+        self.I2CMotorDriverAdd=address
 
-	#Maps speed from 0-100 to 0-255
-	def map_vals(self,value, leftMin, leftMax, rightMin, rightMax):
-		#http://stackoverflow.com/questions/1969240/mapping-a-range-of-values-to-another
-		# Figure out how 'wide' each range is
-		leftSpan = leftMax - leftMin
-		rightSpan = rightMax - rightMin
+        #Maps speed from 0-100 to 0-255
+    def map_vals(self,value, leftMin, leftMax, rightMin, rightMax):
+        #http://stackoverflow.com/questions/1969240/mapping-a-range-of-values-to-another
+        # Figure out how 'wide' each range is
+        leftSpan = leftMax - leftMin
+        rightSpan = rightMax - rightMin
 
-		# Convert the left range into a 0-1 range (float)
-		valueScaled = float(value - leftMin) / float(leftSpan)
+        # Convert the left range into a 0-1 range (float)
+        valueScaled = float(value - leftMin) / float(leftSpan)
 
-		# Convert the 0-1 range into a value in the right range.
-		return int(rightMin + (valueScaled * rightSpan))
+        # Convert the 0-1 range into a value in the right range.
+        return int(rightMin + (valueScaled * rightSpan))
 
-	#Set motor speed
-	def MotorSpeedSetAB(self,MotorSpeedA,MotorSpeedB):
-		MotorSpeedA=self.map_vals(MotorSpeedA,0,100,0,255)
-		MotorSpeedB=self.map_vals(MotorSpeedB,0,100,0,255)
-		bus.write_i2c_block_data(self.I2CMotorDriverAdd, self.MotorSpeedSet, [MotorSpeedA,MotorSpeedB])
-		time.sleep(.02)
+            #Set motor speed
+    def MotorSpeedSetAB(self,MotorSpeedA,MotorSpeedB):
+        MotorSpeedA=self.map_vals(MotorSpeedA,0,100,0,255)
+        MotorSpeedB=self.map_vals(MotorSpeedB,0,100,0,255)
+        bus.write_i2c_block_data(self.I2CMotorDriverAdd, self.MotorSpeedSet, [MotorSpeedA,MotorSpeedB])
+        time.sleep(.02)
 
-	#Set motor direction
-	def MotorDirectionSet(self,Direction):
-		bus.write_i2c_block_data(self.I2CMotorDriverAdd, self.DirectionSet, [Direction,0])
-		time.sleep(.02)
+    #Set motor direction
+    def MotorDirectionSet(self,Direction):
+        bus.write_i2c_block_data(self.I2CMotorDriverAdd, self.DirectionSet, [Direction,0])
+        time.sleep(.02)
 
-    def move(self, MotorSpeedA, MotorSpeedB, Second):
-        if(MotorSpeedA < 0) and (MotorSpeedB < 0):
-            self.MotorDirectionSet(0b0101)
-            MotorSpeedA = str(MotorSpeedA).strip('-')
-            MotorSpeedB = str(MotorSpeedB).strip('-')
-            self.MotorSpeedSetAB(MotorSpeedA, MotorSpeedB)
-        else if(MotorSpeedA >= 0) and MotorSpeedB >=0):
-            self.MotorDirectionSet(0b1010)
-            self.MotorSpeedSetAB(MotorSpeedA, MotorSpeedB)
-        else if(MotorSpeedA >=100) and (MotorSpeedB < 0):
-            MotorSpeedB = str(MotorSpeedB).strip('-')
-            self.MotorSpeedSetAB(MotorSpeedA, MotorSpeedB)
-            self.MotorDirectionSet(0b0110)
-        else if(MotorSpeedA <100) and (MotorSpeedB >= 0):
-            MotorSpeedA = str(MotorSpeedA).strip('-')
-            self.MotorSpeedSetAB(MotorSpeedA, MotorSpeedB)
-            self.MotorDirectionSet(0b1001)
 
+def move(self, MotorSpeedA, MotorSpeedB, Second):
+    if(MotorSpeedA < 0) and (MotorSpeedB < 0):
+        self.MotorDirectionSet(0b1001)
+        MotorSpeedA = int(str(MotorSpeedA).strip('-'))
+        MotorSpeedB = int(str(MotorSpeedB).strip('-'))
+        self.MotorSpeedSetAB(MotorSpeedA, MotorSpeedB)
+    elif(MotorSpeedA >= 0) and (MotorSpeedB >=0):
+        self.MotorDirectionSet(0b1010)
+        self.MotorSpeedSetAB(MotorSpeedA, MotorSpeedB)
+    elif(MotorSpeedA >=100) and (MotorSpeedB < 0):
+        MotorSpeedB = int(str(MotorSpeedB).strip('-'))
+        self.MotorSpeedSetAB(MotorSpeedA, MotorSpeedB)
+        self.MotorDirectionSet(0b0101)
+    elif(MotorSpeedA <100) and (MotorSpeedB >= 0):
+        MotorSpeedA = int(str(MotorSpeedA).strip('-'))
+        self.MotorSpeedSetAB(MotorSpeedA, MotorSpeedB)
+        self.MotorDirectionSet(0b1010)
         time.sleep(Second)
         self.MotorSpeedSetAB(0, 0)
 
-# m= motor_driver()
-# m.MotorSpeedSetAB(100,100)
-# m.MotorDirectionSet(0b1010)
-# time.sleep(2)
-# m.MotorSpeedSetAB(100,100)
-# m.MotorDirectionSet(0b0101)
-# time.sleep(2)
-# print "backwards"
-# m.MotorSpeedSetAB(100,100)
-# m.MotorDirectionSet(0b1001)
-# time.sleep(2)
-# print "forward"
-# m.MotorSpeedSetAB(100,100)
-# m.MotorDirectionSet(0b0110)
-# time.sleep(2)
+                    # m= motor_driver()
+                    # m.MotorSpeedSetAB(100,100)
+                        # m.MotorDirectionSet(0b1010)
+                        # time.sleep(2)
+                        # m.MotorSpeedSetAB(100,100)
+                        # m.MotorDirectionSet(0b0101)
+                        # time.sleep(2)
+                        # print "backwards"
+                        # m.MotorSpeedSetAB(100,100)
+                        # m.MotorDirectionSet(0b1001)
+                        # time.sleep(2)
+                        # print "forward"
+                        # m.MotorSpeedSetAB(100,100)
+                        # m.MotorDirectionSet(0b0110)
+                        # time.sleep(2)
