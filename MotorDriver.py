@@ -70,16 +70,16 @@ def move(self, MotorSpeedA, MotorSpeedB, Second):
         MotorSpeedB = int(str(MotorSpeedB).strip('-'))
         self.MotorSpeedSetAB(MotorSpeedA, MotorSpeedB)
     elif(MotorSpeedA >= 0) and (MotorSpeedB >=0):
-        self.MotorDirectionSet(0b1010)
+        self.MotorDirectionSet(0b0110)
         self.MotorSpeedSetAB(MotorSpeedA, MotorSpeedB)
     elif(MotorSpeedA >=100) and (MotorSpeedB < 0):
         MotorSpeedB = int(str(MotorSpeedB).strip('-'))
         self.MotorSpeedSetAB(MotorSpeedA, MotorSpeedB)
-        self.MotorDirectionSet(0b0101)
+        self.MotorDirectionSet(0b1010)
     elif(MotorSpeedA <100) and (MotorSpeedB >= 0):
         MotorSpeedA = int(str(MotorSpeedA).strip('-'))
         self.MotorSpeedSetAB(MotorSpeedA, MotorSpeedB)
-        self.MotorDirectionSet(0b1010)
+        self.MotorDirectionSet(0b0101)
         time.sleep(Second)
         self.MotorSpeedSetAB(0, 0)
 
