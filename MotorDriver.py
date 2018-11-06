@@ -80,8 +80,8 @@ class motor_driver:
             MotorSpeedA = int(str(MotorSpeedA).strip('-'))
             self.MotorSpeedSetAB(MotorSpeedA, MotorSpeedB)
             self.MotorDirectionSet(0b0101)
-            time.sleep(Second)
-            self.MotorSpeedSetAB(0, 0)
+        time.sleep(Second)
+        self.MotorSpeedSetAB(0, 0)
 
                     # m= motor_driver()
                     # m.MotorSpeedSetAB(100,100)
