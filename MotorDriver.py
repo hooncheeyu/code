@@ -62,18 +62,39 @@ class motor_driver:
 		bus.write_i2c_block_data(self.I2CMotorDriverAdd, self.DirectionSet, [Direction,0])
 		time.sleep(.02)
 
-m= motor_driver()
-m.MotorSpeedSetAB(100,100)
-m.MotorDirectionSet(0b1010)
-time.sleep(2)
-m.MotorSpeedSetAB(100,100)
-m.MotorDirectionSet(0b0101)
-time.sleep(2)
-print "backwards"
-m.MotorSpeedSetAB(100,100)
-m.MotorDirectionSet(0b1001)
-time.sleep(2)
-print "forward"
-m.MotorSpeedSetAB(100,100)
-m.MotorDirectionSet(0b0110)
-time.sleep(2)
+    def move(self, MotorSpeedA, MotorSpeedB, Second):
+        if(MotorSpeedA < 0) and (MotorSpeedB < 0):
+            self.MotorDirectionSet(0b0101)
+            MotorSpeedA = str(MotorSpeedA).strip('-')
+            MotorSpeedB = str(MotorSpeedB).strip('-')
+            self.MotorSpeedSetAB(MotorSpeedA, MotorSpeedB)
+        else if(MotorSpeedA >= 0) and MotorSpeedB >=0):
+            self.MotorDirectionSet(0b1010)
+            self.MotorSpeedSetAB(MotorSpeedA, MotorSpeedB)
+        else if(MotorSpeedA >=100) and (MotorSpeedB < 0):
+            MotorSpeedB = str(MotorSpeedB).strip('-')
+            self.MotorSpeedSetAB(MotorSpeedA, MotorSpeedB)
+            self.MotorDirectionSet(0b0110)
+        else if(MotorSpeedA <100) and (MotorSpeedB >= 0):
+            MotorSpeedA = str(MotorSpeedA).strip('-')
+            self.MotorSpeedSetAB(MotorSpeedA, MotorSpeedB)
+            self.MotorDirectionSet(0b1001)
+
+        time.sleep(Second)
+        self.MotorSpeedSetAB(0, 0)
+
+# m= motor_driver()
+# m.MotorSpeedSetAB(100,100)
+# m.MotorDirectionSet(0b1010)
+# time.sleep(2)
+# m.MotorSpeedSetAB(100,100)
+# m.MotorDirectionSet(0b0101)
+# time.sleep(2)
+# print "backwards"
+# m.MotorSpeedSetAB(100,100)
+# m.MotorDirectionSet(0b1001)
+# time.sleep(2)
+# print "forward"
+# m.MotorSpeedSetAB(100,100)
+# m.MotorDirectionSet(0b0110)
+# time.sleep(2)
