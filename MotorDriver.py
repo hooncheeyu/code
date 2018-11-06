@@ -65,18 +65,22 @@ class motor_driver:
 
     def move(self, MotorSpeedA, MotorSpeedB, Second):
         if(MotorSpeedA < 0) and (MotorSpeedB < 0):
+            print "Forward"
             self.MotorDirectionSet(0b1001)
             MotorSpeedA = int(str(MotorSpeedA).strip('-'))
             MotorSpeedB = int(str(MotorSpeedB).strip('-'))
             self.MotorSpeedSetAB(MotorSpeedA, MotorSpeedB)
         elif(MotorSpeedA >= 0) and (MotorSpeedB >=0):
+            print "backwards"
             self.MotorDirectionSet(0b0110)
             self.MotorSpeedSetAB(MotorSpeedA, MotorSpeedB)
         elif(MotorSpeedA >=100) and (MotorSpeedB < 0):
+            print "turn left"
             MotorSpeedB = int(str(MotorSpeedB).strip('-'))
             self.MotorSpeedSetAB(MotorSpeedA, MotorSpeedB)
             self.MotorDirectionSet(0b1010)
         elif(MotorSpeedA <100) and (MotorSpeedB >= 0):
+            print "turn right"
             MotorSpeedA = int(str(MotorSpeedA).strip('-'))
             self.MotorSpeedSetAB(MotorSpeedA, MotorSpeedB)
             self.MotorDirectionSet(0b0101)
