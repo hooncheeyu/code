@@ -23,3 +23,7 @@ class buzzer:
         grovepi.analogWrite(self.port,volume)
         time.sleep(duration)
         grovepi.analogWrite(self.port,0)
+
+    def playTone(self,volume):
+        print("Play Tone " + str(volume) )
+        grovepi.analogWrite(self.port,volume)

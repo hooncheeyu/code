@@ -65,27 +65,49 @@ class motor_driver:
 
     def move(self, MotorSpeedA, MotorSpeedB, Second):
         if(MotorSpeedA < 0) and (MotorSpeedB < 0):
-            print "Backward"
+            # print "Backward"
             self.MotorDirectionSet(0b1001)
             MotorSpeedA = int(str(MotorSpeedA).strip('-'))
             MotorSpeedB = int(str(MotorSpeedB).strip('-'))
             self.MotorSpeedSetAB(MotorSpeedA, MotorSpeedB)
         elif(MotorSpeedA >= 0) and (MotorSpeedB >=0):
-            print "Forward"
+            # print "Forward"
             self.MotorDirectionSet(0b0110)
             self.MotorSpeedSetAB(MotorSpeedA, MotorSpeedB)
         elif(MotorSpeedA >=0) and (MotorSpeedB < 0):
-            print "turn left"
+            # print "turn left"
             MotorSpeedB = int(str(MotorSpeedB).strip('-'))
             self.MotorSpeedSetAB(MotorSpeedA, MotorSpeedB)
             self.MotorDirectionSet(0b1010)
         elif(MotorSpeedA <0) and (MotorSpeedB >= 0):
-            print "turn right"
+            # print "turn right")
             MotorSpeedA = int(str(MotorSpeedA).strip('-'))
             self.MotorSpeedSetAB(MotorSpeedA, MotorSpeedB)
             self.MotorDirectionSet(0b0101)
         time.sleep(Second)
         self.MotorSpeedSetAB(0, 0)
+
+    def move(self, MotorSpeedA, MotorSpeedB):
+        if(MotorSpeedA < 0) and (MotorSpeedB < 0):
+            # print "Backward"
+            self.MotorDirectionSet(0b1001)
+            MotorSpeedA = int(str(MotorSpeedA).strip('-'))
+            MotorSpeedB = int(str(MotorSpeedB).strip('-'))
+            self.MotorSpeedSetAB(MotorSpeedA, MotorSpeedB)
+        elif(MotorSpeedA >= 0) and (MotorSpeedB >=0):
+            # print "Forward"
+            self.MotorDirectionSet(0b0110)
+            self.MotorSpeedSetAB(MotorSpeedA, MotorSpeedB)
+        elif(MotorSpeedA >=0) and (MotorSpeedB < 0):
+            # print "turn left"
+            MotorSpeedB = int(str(MotorSpeedB).strip('-'))
+            self.MotorSpeedSetAB(MotorSpeedA, MotorSpeedB)
+            self.MotorDirectionSet(0b1010)
+        elif(MotorSpeedA <0) and (MotorSpeedB >= 0):
+            # print "turn right")
+            MotorSpeedA = int(str(MotorSpeedA).strip('-'))
+            self.MotorSpeedSetAB(MotorSpeedA, MotorSpeedB)
+            self.MotorDirectionSet(0b0101)
 
                     # m= motor_driver()
                     # m.MotorSpeedSetAB(100,100)
