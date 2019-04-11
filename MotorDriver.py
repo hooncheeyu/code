@@ -52,6 +52,10 @@ class motor_driver:
 
             #Set motor speed
     def MotorSpeedSetAB(self,MotorSpeedA,MotorSpeedB):
+        if（MotorSpeedA != 0）:
+            MotorSpeedA = (MotorSpeedA/100 * 40) + 60
+        if（MotorSpeedB != 0）:
+            MotorSpeedB = (MotorSpeedB/100 * 40) + 60
         MotorSpeedA=self.map_vals(MotorSpeedA,0,100,0,255)
         MotorSpeedB=self.map_vals(MotorSpeedB,0,100,0,255)
         bus.write_i2c_block_data(self.I2CMotorDriverAdd, self.MotorSpeedSet, [MotorSpeedA,MotorSpeedB])
