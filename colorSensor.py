@@ -64,152 +64,151 @@ _PON        = 0x01
 _GAINS  = (1, 4, 16, 60)
 
 
-class colorSensor:
-    """Driver for Grove I2C Color Sensor (TCS34725)"""
+"""Driver for Grove I2C Color Sensor (TCS34725)"""
 
-    def __init__(self, bus=None, address=0x29):
-        self.address = address
+def __init__(self, bus=None, address=0x29):
+    self.address = address
 ##        self.bus = Bus(bus)
-        if bus is None:
-            # Use Rasbperry Pi revision to choose bus number
-            board_revision = RPi.GPIO.RPI_REVISION
-            if board_revision == 2 or board_revision == 3:
-                bus= 1
-            else:
-                bus = 0
-        self.bus = smbus.SMBus(bus)
+    if bus is None:
+        # Use Rasbperry Pi revision to choose bus number
+        board_revision = RPi.GPIO.RPI_REVISION
+        if board_revision == 2 or board_revision == 3:
+            bus= 1
+        else:
+            bus = 0
+    self.bus = smbus.SMBus(bus)
 
-        self.awake = False
+    self.awake = False
 
-        if self.id not in (0x44, 0x4D):
-            raise ValueError('Not find a Grove I2C Color Sensor V2')
+    if self.id not in (0x44, 0x4D):
+        raise ValueError('Not find a Grove I2C Color Sensor V2')
 
-        self.set_integration_time(24)
-        self.set_gain(4)
+    self.set_integration_time(24)
+    self.set_gain(4)
 
-    def wakeup(self):
-        enable = self._read_byte(_ENABLE)
-        self._write_byte(_ENABLE, enable | _PON | _AEN)
+def wakeup(self):
+    enable = self._read_byte(_ENABLE)
+    self._write_byte(_ENABLE, enable | _PON | _AEN)
+    time.sleep(0.0024)
+
+    self.awake = True
+
+def sleep(self):
+    enable = self._read_byte(_ENABLE)
+    self._write_byte(_ENABLE, enable & ~_PON)
+
+    self.awake = False
+
+def is_awake(self):
+    return self._read_byte(_ENABLE) & _PON
+
+def set_wait_time(self, t):
+    pass
+
+@property
+def id(self):
+    return self._read_byte(_ID)
+
+@property
+def integration_time(self):
+    steps = 256 - self._read_byte(_ATIME)
+    return steps * 2.4
+
+def set_integration_time(self, t):
+    """Set the integration time of the sensor"""
+    if t < 2.4:
+        t = 2.4
+    elif t > 614.4:
+        t = 614.4
+
+    steps = int(t / 2.4)
+    self._integration_time = steps * 2.4
+    self._write_byte(_ATIME, 256 - steps)
+
+@property
+def gain(self):
+    """The gain control. Should be 1, 4, 16, or 60.
+    """
+    return _GAINS[self._read_byte(_CONTROL)]
+
+def set_gain(self, gain):
+    if gain in _GAINS:
+        self._write_byte(_CONTROL, _GAINS.index(gain))
+
+@property
+def raw(self):
+    """Read RGBC registers
+    return 16 bits red, green, blue and clear data
+    """
+
+    if not self.awake:
+        self.wakeup()
+
+    while not self._valid():
         time.sleep(0.0024)
 
-        self.awake = True
+    data = tuple(self._read_word(reg) for reg in (_RDATA, _GDATA, _BDATA, _CDATA))
+    return data
 
-    def sleep(self):
-        enable = self._read_byte(_ENABLE)
-        self._write_byte(_ENABLE, enable & ~_PON)
+@property
+def rgb(self):
+    """Read the RGB color detected by the sensor.  Returns a 3-tuple of
+    red, green, blue component values as bytes (0-255).
+    """
+    r, g, b, clear = self.raw
+    if clear:
+        r = int(255 * r / clear)
+        g = int(255 * g / clear)
+        b = int(255 * b / clear)
+    else:
+        r, g, b = 0, 0, 0
+    return r, g, b
 
-        self.awake = False
-
-    def is_awake(self):
-        return self._read_byte(_ENABLE) & _PON
-
-    def set_wait_time(self, t):
-        pass
-
-    @property
-    def id(self):
-        return self._read_byte(_ID)
-
-    @property
-    def integration_time(self):
-        steps = 256 - self._read_byte(_ATIME)
-        return steps * 2.4
-
-    def set_integration_time(self, t):
-        """Set the integration time of the sensor"""
-        if t < 2.4:
-            t = 2.4
-        elif t > 614.4:
-            t = 614.4
-
-        steps = int(t / 2.4)
-        self._integration_time = steps * 2.4
-        self._write_byte(_ATIME, 256 - steps)
-
-    @property
-    def gain(self):
-        """The gain control. Should be 1, 4, 16, or 60.
-        """
-        return _GAINS[self._read_byte(_CONTROL)]
-
-    def set_gain(self, gain):
-        if gain in _GAINS:
-            self._write_byte(_CONTROL, _GAINS.index(gain))
-
-    @property
-    def raw(self):
-        """Read RGBC registers
-        return 16 bits red, green, blue and clear data
-        """
-
-        if not self.awake:
-            self.wakeup()
-
-        while not self._valid():
-            time.sleep(0.0024)
-
-        data = tuple(self._read_word(reg) for reg in (_RDATA, _GDATA, _BDATA, _CDATA))
-        return data
-
-    @property
-    def rgb(self):
-        """Read the RGB color detected by the sensor.  Returns a 3-tuple of
-        red, green, blue component values as bytes (0-255).
-        """
-        r, g, b, clear = self.raw
-        if clear:
-            r = int(255 * r / clear)
-            g = int(255 * g / clear)
-            b = int(255 * b / clear)
+@property
+def getColor(self):
+    r, g, b = self.rgb
+    color = None
+    if (r >= 85):
+        if (g >= 85):
+            color = "Yellow"
+        elif (b >= 70):
+            color = "Orange"
         else:
-            r, g, b = 0, 0, 0
-        return r, g, b
-
-    @property
-    def getColor(self):
-        r, g, b = self.rgb
-        color = None
-        if (r >= 85):
-            if (g >= 85):
-                color = "Yellow"
-            elif (b >= 70):
-                color = "Orange"
-            else:
-                color = "Red"
-        elif (r >= 60):
-            color = "White"
-        elif (g >= 100):
-            color = "Green"
-        elif (b >= 100):
-            if (r >= 55):
-                color = "Purple"
-            else:
-                color = "Blue"
+            color = "Red"
+    elif (r >= 60):
+        color = "White"
+    elif (g >= 100):
+        color = "Green"
+    elif (b >= 100):
+        if (r >= 55):
+            color = "Purple"
         else:
-            color = "Black"
+            color = "Blue"
+    else:
+        color = "Black"
 
-        return color
+    return color
 
-    def _valid(self):
-        """Check if RGBC is valid"""
-        return self._read_byte(_STATUS) & 0x01
+def _valid(self):
+    """Check if RGBC is valid"""
+    return self._read_byte(_STATUS) & 0x01
 
-    def _read_byte(self, address):
-        command = _CMD | address
-        return self.bus.read_byte_data(self.address, command)
+def _read_byte(self, address):
+    command = _CMD | address
+    return self.bus.read_byte_data(self.address, command)
 
-    def _read_word(self, address):
-        command = _CMD | _AUTO | address
-        return self.bus.read_word_data(self.address, command)
+def _read_word(self, address):
+    command = _CMD | _AUTO | address
+    return self.bus.read_word_data(self.address, command)
 
-    def _write_byte(self, address, data):
-        command = _CMD | address
-        self.bus.write_byte_data(self.address, command, data)
+def _write_byte(self, address, data):
+    command = _CMD | address
+    self.bus.write_byte_data(self.address, command, data)
 
-    def _write_word(self, address, data):
-        command = _CMD | _AUTO | address
-        data = [(data >> 8) & 0xFF, data & 0xFF]
-        self.bus.write_i2c_block_data(self.address, command, data)
+def _write_word(self, address, data):
+    command = _CMD | _AUTO | address
+    data = [(data >> 8) & 0xFF, data & 0xFF]
+    self.bus.write_i2c_block_data(self.address, command, data)
 
 
 def main():
