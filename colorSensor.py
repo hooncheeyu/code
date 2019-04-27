@@ -212,18 +212,20 @@ class colorSensor:
         self.bus.write_i2c_block_data(self.address, command, data)
 
 
-def main():
+def getColor():
     sensor = colorSensor()
 
-##    print('Raw data of red-filtered, green-filtered, blue-filtered and unfiltered photodiodes')
-    while True:
-        r, g, b = sensor.rgb
-        print ((r, g, b))
-##        r, g, b, clear = sensor.raw
-##        print((r, g, b, clear))
-        color = sensor.getColor
-        print (color)
-        time.sleep(0.5)
+    return sensor.getColor
+#
+# ##    print('Raw data of red-filtered, green-filtered, blue-filtered and unfiltered photodiodes')
+#     while True:
+#         r, g, b = sensor.rgb
+#         print ((r, g, b))
+# ##        r, g, b, clear = sensor.raw
+# ##        print((r, g, b, clear))
+#         color = sensor.getColor
+#         print (color)
+#         time.sleep(0.5)
 
 ##if __name__ == '__main__':
 ##    main()
